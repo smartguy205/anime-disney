@@ -10,6 +10,7 @@ export default function Chat() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { user } = useAppSelector((state) => state.auth);
   const { messages } = useAppSelector((state) => state.message);
+  console.log("this is messages", messages);
   useEffect(() => {
     MessageService.getMessages(dispatch);
     SocketService.message(user?._id, dispatch);
@@ -35,13 +36,15 @@ export default function Chat() {
                 alt="Guest"
               />
               <p style={{ textTransform: "capitalize" }}>
-                {message.sender.name}
+                {message.sender != null && message.sender.name}
               </p>
             </div>
             <div className="bubble">
               <div className="bubble-inner">
                 <p style={{ textAlign: "right" }}>
-                  {message.sender.race ? message.sender.race : "human"}
+                  {message.sender != null && message.sender.race
+                    ? message.sender.race
+                    : "human"}
                 </p>
                 <div>
                   <p>{message.message}</p>
