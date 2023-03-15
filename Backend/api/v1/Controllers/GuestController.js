@@ -30,11 +30,12 @@ exports.addSocketUser = tryCatchAsync(async (req, res) => {
 exports.getUser = tryCatchAsync(async (req, res) => {
   const { id } = req.params;
   const query = { _id: id };
-  let user = await User.findOne(query);
+  // let user = await User.findOne(query);
 
-  if (!user) throw new AppError("Not found", notFound);
-  user.password = "";
-  let response_data = { user };
+  // if (!user) throw new AppError("Not found", notFound);
+  // user.password = "";
+  // let response_data = { user };
+  let response_data = { email: "joj@fs.com" };
   return apiResponse.successResponse(res, response_data, "", success);
 });
 
