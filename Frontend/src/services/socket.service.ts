@@ -5,8 +5,9 @@ import { messageActions } from "redux/slices/message";
 import AuthService from "./auth.service";
 import MessageService from "./message.service";
 
-// const socket = io("localhost:3001");
-const socket = io("https://api.animedisney.com");
+const api = process.env.REACT_APP_API_URL
+const socket = io(`${api}`);
+// const socket = io("https://api.animedisney.com");
 const SocketService = {
   join: (user: any) => {
     let r = (Math.random() + 1).toString(36).substring(7);

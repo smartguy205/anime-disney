@@ -14,7 +14,7 @@ let transporter = nodemailer.createTransport({
   port: 465, // replace with your SMTP server port
   secure: true, // true for 465, false for other ports
   auth: {
-    user: "goddess@animedisney.com",
+    user: "_mainaccount@animedisney.com",
     pass: "goddessanimedisney",
   },
 });
@@ -216,12 +216,12 @@ exports.recover = tryCatchAsync(async (req, res) => {
 
   const user = await User.findOne({ email });
   // setup email data
+  console.log();
   let mailOptions = {
-    from: "goddess@animedisney.com",
+    from: "_mainaccount@animedisney.com",
     to: email,
     subject: "Anime Disney - Recover Your Account",
-    text: 
-`Please use this email and password to login.
+    text: `Please use this email and password to login.
 Email: ${email}
 Password: ${user.password}
     `,
