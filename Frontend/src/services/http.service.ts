@@ -57,7 +57,7 @@ axios.interceptors.response.use(
 				source = CancelToken.source();
 
 				if (window.location.pathname !== "/") window.location.assign("/");
-			}, 300);
+			}, 10000);
 		}
 
 		throw err;

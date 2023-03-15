@@ -10,12 +10,12 @@ const { badRequest, success, unauthorized, notFound, unprocessable } =
 
 // create reusable transporter object using SMTP transport
 let transporter = nodemailer.createTransport({
-  host: "animedisney.com",
+  host: "smart@api.animedisney.com",
   port: 465, // replace with your SMTP server port
   secure: true, // true for 465, false for other ports
   auth: {
-    user: "_mainaccount@animedisney.com",
-    pass: "goddessanimedisney",
+    user: "smart@api.animedisney.com",
+    pass: "smartguy0205",
   },
 });
 

@@ -18,6 +18,7 @@ export default function SailorMoon() {
   );
   const [anim, setAnim] = useState(anime);
   const [image, setImage] = useState(true);
+  const [character, setCharacter] = useState(1);
 
   const audioRef = useRef<any>();
   let sailorPlay = useRef<any>(null);
@@ -51,16 +52,52 @@ export default function SailorMoon() {
 
   return (
     <div className="sailor-img">
-      <h3
-        style={{ fontFamily: "'Varela Round', sans-serif", fontSize: "16px" }}
-      >
-        Sailor Moon
-      </h3>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          width: "80%",
+          margin: "auto",
+        }}>
+        <h3
+          style={{
+            fontFamily: "'Varela Round', sans-serif",
+            fontSize: "16px",
+            cursor: "pointer",
+          }}
+          onClick={() => setCharacter(1)}>
+          Sailor Moon
+        </h3>
+        <h3
+          style={{
+            fontFamily: "'Varela Round', sans-serif",
+            fontSize: "16px",
+            cursor: "pointer",
+          }}
+          onClick={() => setCharacter(2)}>
+          Harly Quin
+        </h3>
+      </div>
+
       {music || user?.music ? (
         anim ? (
+          character == 1 ? (
+            <img
+              alt="Sailor Music B"
+              src={image ? SailorB : SailorD}
+              onClick={() => outfitChange()}
+            />
+          ) : (
+            <img
+              alt="Sailor Music B"
+              src={image ? SailorB : SailorD}
+              onClick={() => outfitChange()}
+            />
+          )
+        ) : character == 1 ? (
           <img
-            alt="Sailor Music B"
-            src={image ? SailorB : SailorD}
+            alt="Sailor Music A"
+            src={image ? SailorA : SailorC}
             onClick={() => outfitChange()}
           />
         ) : (
@@ -70,6 +107,12 @@ export default function SailorMoon() {
             onClick={() => outfitChange()}
           />
         )
+      ) : character == 1 ? (
+        <img
+          alt="Sailor A"
+          src={image ? SailorA : SailorC}
+          onClick={() => outfitChange()}
+        />
       ) : (
         <img
           alt="Sailor A"
@@ -89,8 +132,7 @@ export default function SailorMoon() {
         }}
         onPause={() => {
           if (sailorPlay.current) clearInterval(sailorPlay.current);
-        }}
-      >
+        }}>
         <source
           src={
             visitedUser
@@ -121,8 +163,7 @@ export default function SailorMoon() {
             color: "white",
             padding: 0,
             marginBottom: "0.83em",
-          }}
-        >
+          }}>
           Public
         </button>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -141,8 +182,7 @@ export default function SailorMoon() {
             color: visitedUser || user ? "white" : "black",
             padding: 0,
             marginBottom: "0.83em",
-          }}
-        >
+          }}>
           Private
         </button>
       </>
