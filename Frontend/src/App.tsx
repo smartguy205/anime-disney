@@ -34,7 +34,15 @@ export default function App() {
   const { background, property, video } = useAppSelector(
     (state) => state.background
   );
+  useEffect(() => {
+    console.log("this is user data for current user", user);
+    SocketService.join(user);
+    SocketService.getCurrent();
+  }, []);
 
+  useEffect(() => {
+    SocketService.connections(dispatch);
+  }, [dispatch]);
   useEffect(() => {
     console.log("Hiiii", visitedUser?.background);
 
@@ -50,15 +58,6 @@ export default function App() {
       ImageService.getBackground(dispatch);
     }
   }, [dispatch, user, visitedUser]);
-
-  useEffectOnce(() => {
-    SocketService.join(user);
-    SocketService.getCurrent();
-  });
-
-  useEffect(() => {
-    SocketService.connections(dispatch);
-  }, [dispatch]);
 
   return (
     <div
@@ -80,16 +79,14 @@ export default function App() {
         backgroundPosition: `${property === "repeat" ? "unset" : "center"}`,
         backgroundRepeat: `${property === "repeat" ? "round" : "no-repeat"}`,
         height: "100vh",
-      }}
-    >
+      }}>
       {video && (
         <video
           loop
           autoPlay
           className={`${
             property === "normal" ? "bg-video-normal" : ""
-          } bg-video`}
-        >
+          } bg-video`}>
           <source
             src={`${process.env.REACT_APP_FILE_URL}/${
               visitedUser ? visitedUser?.video : user ? user?.video : video
@@ -117,8 +114,7 @@ export default function App() {
           error: "✖️",
           warning: "⚠️",
           info: "ℹ️",
-        }}
-      >
+        }}>
         <Toaster />
         <CacheProvider value={cache}>
           <ThemeProvider theme={theme}>

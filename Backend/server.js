@@ -54,7 +54,10 @@ const getUsersInRoom = (room) => users.filter((user) => room === user.room);
 
 io.on("connection", (socket) => {
   global.chatSocket = socket;
+
   socket.on("join", ({ name, room, id }, callback) => {
+    console.log("ssss", id, name, room);
+    console.log("this is socket", socket.id);
     const { user, error } = addUser({
       id: id ? id : socket.id,
       name,
@@ -77,6 +80,7 @@ io.on("connection", (socket) => {
 
   socket.on("sendMessage", (data, callback) => {
     const user = getUser(data.id);
+    console.log("this is sending user", user);
     if (user) {
       io.to(user.room).emit("message", {
         id: user.id,

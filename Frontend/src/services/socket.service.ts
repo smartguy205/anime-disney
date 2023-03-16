@@ -6,9 +6,9 @@ import AuthService from "./auth.service";
 import MessageService from "./message.service";
 
 const api = process.env.REACT_APP_API_URL
-const socket = io(`${api}`);
+// const socket = io(`${api}`);
 // const socket = io("https://api.animedisney.com");
-// const socket = io("http://localhost:3001");
+const socket = io("http://localhost:3001");
 const SocketService = {
   join: (user: any) => {
     let r = (Math.random() + 1).toString(36).substring(7);
@@ -35,6 +35,7 @@ const SocketService = {
   },
 
   getCurrent: () => {
+    console.log("this is get current user");
     socket.on("getCurrent", (data: any) => {
       console.log("Here is Current user", data);
       localStorage.setItem("socketId", data.id);
