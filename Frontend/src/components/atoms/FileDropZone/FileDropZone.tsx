@@ -49,6 +49,7 @@ export default function FileDropZone({ type, uploadType }: any) {
   const getUploadParams = async ({ file }: IFileWithMeta) => {
     const body = new FormData();
     body.append("image", file);
+
     return { url: `${config.API_URL}/guest/upload`, body };
   };
 

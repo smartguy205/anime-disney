@@ -107,12 +107,14 @@ export default function SailorMoon() {
           anim ? (
             <img
               alt="Sailor Music B"
+              height="336px"
               src={QuinnGroup[quinn].quinn2}
               onClick={() => changeQuinn()}
             />
           ) : (
             <img
               alt="Sailor Music A"
+              height="336px"
               src={QuinnGroup[quinn].quinn1}
               onClick={() => changeQuinn()}
             />
@@ -120,6 +122,7 @@ export default function SailorMoon() {
         ) : (
           <img
             alt="Sailor A"
+            height="336px"
             src={QuinnGroup[quinn].quinn1}
             onClick={() => changeQuinn()}
           />
