@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import MessageService from "services/message.service";
 import SocketService from "services/socket.service";
+import { LightgalleryItem } from "react-lightgallery";
 
 export default function Chat() {
   const dispatch = useAppDispatch();
@@ -49,6 +50,15 @@ export default function Chat() {
                 <div>
                   <p>{message.message}</p>
                 </div>
+                {message.attachment != "" && (
+                  <div>
+                    <LightgalleryItem
+                      src={`${process.env.REACT_APP_FILE_URL}/${message.attachment}`}>
+                      <img
+                        src={`${process.env.REACT_APP_FILE_URL}/${message.attachment}`}></img>
+                    </LightgalleryItem>
+                  </div>
+                )}
                 <div className="race-chat">
                   <p>
                     {moment(message.createdAt).format("h:mm a")}&nbsp;&nbsp;

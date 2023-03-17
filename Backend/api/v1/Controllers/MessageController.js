@@ -5,11 +5,12 @@ const GroupChat = require("../Models/GroupChat");
 const { success } = require("../../../util/statusCode").statusCode;
 
 exports.addChat = tryCatchAsync(async (req, res) => {
-  const { sender, name, message } = req.body;
+  const { sender, name, message, attachment } = req.body;
   const data = await GroupChat.create({
     name,
     message,
     sender: sender,
+    attachment,
   });
 
   let response_data = { message: data };

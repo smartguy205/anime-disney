@@ -87,6 +87,7 @@ io.on("connection", (socket) => {
         createdAt: new Date(),
         name: user.name,
         message: data.message,
+        attachment: data.attachment,
       });
       io.to(user.room).emit("roomData", {
         room: user.room,
