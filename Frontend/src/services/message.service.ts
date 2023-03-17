@@ -9,6 +9,7 @@ const MessageService = {
       sender: id,
       name: data.name,
       message: data.message,
+      attachment: data.attachment
     };
     const [success, error]: any = await Promisable.asPromise(
       http.post("guest/addChat", payload)

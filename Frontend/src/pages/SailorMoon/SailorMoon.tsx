@@ -81,12 +81,14 @@ export default function SailorMoon() {
               alt="Sailor Music B"
               src={image ? SailorB : SailorD}
               onClick={() => outfitChange()}
+              style={{ transition: "opacity 0.3s ease-in-out" }}
             />
           ) : (
             <img
               alt="Sailor Music A"
               src={image ? SailorA : SailorC}
               onClick={() => outfitChange()}
+              style={{ transition: "opacity 0.3s ease-in-out" }}
             />
           )
         ) : (
@@ -94,6 +96,7 @@ export default function SailorMoon() {
             alt="Sailor A"
             src={image ? SailorA : SailorC}
             onClick={() => outfitChange()}
+            style={{ transition: "opacity 0.3s ease-in-out" }}
           />
         )}
       </>
@@ -110,6 +113,7 @@ export default function SailorMoon() {
               height="336px"
               src={QuinnGroup[quinn].quinn2}
               onClick={() => changeQuinn()}
+              style={{ transition: "opacity 0.3s ease-in-out" }}
             />
           ) : (
             <img
@@ -117,6 +121,7 @@ export default function SailorMoon() {
               height="336px"
               src={QuinnGroup[quinn].quinn1}
               onClick={() => changeQuinn()}
+              style={{ transition: "opacity 0.3s ease-in-out" }}
             />
           )
         ) : (
@@ -125,6 +130,7 @@ export default function SailorMoon() {
             height="336px"
             src={QuinnGroup[quinn].quinn1}
             onClick={() => changeQuinn()}
+            style={{ transition: "opacity 0.3s ease-in-out" }}
           />
         )}
       </>
