@@ -26,7 +26,7 @@ export default function SailorMoon() {
   );
   const [anim, setAnim] = useState(anime);
   const [image, setImage] = useState(true);
-  const [character, setCharacter] = useState(1);
+  const [character, setCharacter] = useState(true);
   const [quinn, setQuinn] = useState(0);
   const changeQuinn = () => {
     const new_quinn = quinn + 1;
@@ -39,9 +39,9 @@ export default function SailorMoon() {
 
   const QuinnGroup = [
     { quinn1: Quinn1, quinn2: Quinn2 },
-    { quinn1: Quinn3, quinn2: Quinn4 },
-    { quinn1: Quinn5, quinn2: Quinn6 },
-    { quinn1: Quinn7, quinn2: Quinn8 },
+    { quinn1: Quinn4, quinn2: Quinn3 },
+    { quinn1: Quinn6, quinn2: Quinn5 },
+    { quinn1: Quinn8, quinn2: Quinn7 },
   ];
   const audioRef = useRef<any>();
   let sailorPlay = useRef<any>(null);
@@ -130,41 +130,19 @@ export default function SailorMoon() {
       </>
     );
   };
-  const character1Style = character == 1 ? "white" : "black";
-  const character2Style = character == 2 ? "white" : "black";
   return (
     <div className="sailor-img">
-      <div
+      <h3
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          width: "80%",
-          margin: "auto",
-        }}>
-        <h3
-          style={{
-            fontFamily: "'Varela Round', sans-serif",
-            fontSize: "16px",
-            cursor: "pointer",
-            color: `${character1Style}`,
-          }}
-          onClick={() => setCharacter(1)}>
-          Sailor Moon
-        </h3>
-        <h3
-          style={{
-            fontFamily: "'Varela Round', sans-serif",
-            fontSize: "16px",
-            cursor: "pointer",
-            color: `${character2Style}`,
-          }}
-          onClick={() => setCharacter(2)}>
-          Harley Quinn
-        </h3>
-      </div>
-      {character == 1 && <CharacterShowSailor />}
-      {character == 2 && <CharacterShowQuinn />}
+          fontFamily: "'Varela Round', sans-serif",
+          fontSize: "16px",
+          cursor: "pointer",
+        }}
+        onClick={() => setCharacter(!character)}>
+        {character ? "Sailor Moon" : "Harley Quinn"}
+      </h3>
+
+      {character ? <CharacterShowSailor /> : <CharacterShowQuinn />}
       <audio
         controls
         autoPlay
