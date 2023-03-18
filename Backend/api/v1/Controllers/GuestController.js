@@ -40,7 +40,7 @@ exports.getUser = tryCatchAsync(async (req, res) => {
 });
 
 exports.getAllUsers = tryCatchAsync(async (req, res) => {
-  const users = await User.find();
+  const users = await User.find().sort({ name: 1 });
 
   let response_data = { users };
   return apiResponse.successResponse(res, response_data, "", success);

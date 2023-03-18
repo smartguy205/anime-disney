@@ -1,11 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Field, reduxForm } from "redux-form";
 import SocketService from "services/socket.service";
 import { config } from "config";
 import axios from "axios";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
+import { toast, ToastContainer } from "react-toastify";
+import { useAppSelector } from "redux/hooks";
 
+import "react-toastify/dist/ReactToastify.css";
 function ChatBoxForm() {
+  const user = useAppSelector((state) => state.auth.user);
   const [attachment, setAttachment] = useState<File | null>(null);
   const [message, setMessage] = useState("");
   const FileInput = () => (
@@ -25,40 +29,49 @@ function ChatBoxForm() {
     setAttachment(e.target.files[0]);
   };
   const sendMessage = async () => {
-    if (attachment) {
-      const body = new FormData();
-      body.append("image", attachment);
-      const response = await axios.post(
-        `${config.API_URL}/guest/upload`,
-        body,
-        {
-          headers: { "content-type": "multipart/form-data" },
-        }
-      );
-      if (response.status == 200) {
-        if (response.data.message == "success") {
-          console.log(response.data.data.url);
-          const values = {
-            id: localStorage.getItem("socketId"),
-            message: message,
-            attachment: response.data.data.url,
-          };
-          SocketService.send(values);
+    console.log(user);
+    if (attachment === null && message === "") {
+      toast.error("Enter message", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
+    } else {
+      if (attachment) {
+        const body = new FormData();
+        body.append("image", attachment);
+        const response = await axios.post(
+          `${config.API_URL}/guest/upload`,
+          body,
+          {
+            headers: { "content-type": "multipart/form-data" },
+          }
+        );
+        if (response.status === 200) {
+          if (response.data.message == "success") {
+            console.log(response.data.data.url);
+            const values = {
+              id: localStorage.getItem("socketId"),
+              message: message,
+              attachment: response.data.data.url,
+              userid: user ? user._id : null,
+            };
+            SocketService.send(values);
 
-          setAttachment(null);
-          setMessage("");
+            setAttachment(null);
+            setMessage("");
+          }
         }
+      } else if (attachment === null) {
+        const values = {
+          id: localStorage.getItem("socketId"),
+          message: message,
+          attachment: "",
+          userid: user ? user._id : null,
+        };
+        SocketService.send(values);
+
+        setAttachment(null);
+        setMessage("");
       }
-    } else if (attachment == null) {
-      const values = {
-        id: localStorage.getItem("socketId"),
-        message: message,
-        attachment: "",
-      };
-      SocketService.send(values);
-
-      setAttachment(null);
-      setMessage("");
     }
   };
 
@@ -67,11 +80,10 @@ function ChatBoxForm() {
       // onSubmit={handleSubmit}
       className="form"
       style={{ alignItems: "stretch" }}>
-      <Field
-        type="text"
+      <textarea
         name="message"
         placeholder="Message"
-        component="textarea"
+        // component="textarea"
         rows={6}
         style={{
           width: "100%",
@@ -82,7 +94,7 @@ function ChatBoxForm() {
           paddingRight: "20px",
           paddingBottom: "20px",
         }}
-        defaultValue={message}
+        value={message}
         onChange={(e: any) => setMessage(e.target.value)}
         onKeyDown={(e: any) => {
           if (e.keyCode === 13 && !e.shiftKey) {

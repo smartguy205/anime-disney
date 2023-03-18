@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import { backgroundActions } from "redux/slices/background";
 import { tabActions } from "redux/slices/tab";
+import { messageActions } from "redux/slices/message";
 import UsersService from "services/users.service";
 
 export default function Members() {
@@ -13,15 +14,16 @@ export default function Members() {
   useEffect(() => {
     UsersService.getUsers();
   }, []);
-
+  const goToPrivateChat = (userId: String) => {
+    dispatch(messageActions.setPrivateChat(userId));
+  };
   return (
     <div>
       <ul className="members-list">
         {users.map((user: any, index: number) => (
           <li
             className={user?.role === "admin" ? "admin-member" : ""}
-            key={index}
-          >
+            key={index}>
             <div style={{ display: "flex", alignItems: "center" }}>
               <div className="profile-image-list">
                 <PhotoGallery
@@ -30,8 +32,7 @@ export default function Members() {
                     user?.profile_picture
                       ? `${process.env.REACT_APP_FILE_URL}/${user?.profile_picture}`
                       : TigerImg
-                  }
-                ></PhotoGallery>
+                  }></PhotoGallery>
               </div>
               {/* <img
                 src={
@@ -41,7 +42,11 @@ export default function Members() {
                 }
                 alt="User"
               /> */}
-              <p style={{ textTransform: "capitalize" }}>{user.name}</p>
+              <p
+                style={{ textTransform: "capitalize" }}
+                onClick={() => goToPrivateChat(user._id)}>
+                {user.name}
+              </p>
             </div>
             <Link
               to={`/profile/${user._id}`}
@@ -55,8 +60,7 @@ export default function Members() {
                 textDecoration: "none",
                 fontSize: "16px",
                 fontFamily: "'Varela Round', sans-serif",
-              }}
-            >
+              }}>
               {user.race}
             </Link>
           </li>

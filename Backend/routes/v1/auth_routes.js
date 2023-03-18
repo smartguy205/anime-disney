@@ -4,6 +4,7 @@ const router = express.Router();
 const auth = require("../../api/v1/Controllers/Auth/AuthienticationController");
 
 router.post("/login", auth.login);
+// router.post("/logout", auth.logout);
 router.patch("/video", auth.video);
 router.patch("/music", auth.music);
 router.post("/signup", auth.signUp);

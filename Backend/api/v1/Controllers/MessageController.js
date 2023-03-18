@@ -6,6 +6,7 @@ const { success } = require("../../../util/statusCode").statusCode;
 
 exports.addChat = tryCatchAsync(async (req, res) => {
   const { sender, name, message, attachment } = req.body;
+  console.log(sender, name);
   const data = await GroupChat.create({
     name,
     message,

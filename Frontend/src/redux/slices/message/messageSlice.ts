@@ -3,12 +3,19 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: MessageState = {
   messages: [],
+  privateMessages: [],
+  privateClientId: '',
+  isPrivate: false
 };
 
 export const messageSlice = createSlice({
   name: "message",
   initialState,
   reducers: {
+    setPrivateChat: (state, action) => {
+      state.privateClientId = action.payload;
+      state.isPrivate = true
+    },
     addMessage: (state, action) => {
       state.messages.push(action.payload);
     },

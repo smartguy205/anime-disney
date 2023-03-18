@@ -11,7 +11,6 @@ export default function Chat() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { user } = useAppSelector((state) => state.auth);
   const { messages } = useAppSelector((state) => state.message);
-  console.log("this is messages", messages);
   useEffect(() => {
     MessageService.getMessages(dispatch);
     SocketService.message(user?._id, dispatch);
@@ -45,7 +44,7 @@ export default function Chat() {
                 <p style={{ textAlign: "right" }}>
                   {message.sender != null && message.sender.race
                     ? message.sender.race
-                    : "human"}
+                    : message.name}
                 </p>
                 <div>
                   <p>{message.message}</p>
