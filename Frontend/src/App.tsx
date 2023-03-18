@@ -23,6 +23,8 @@ import { backgroundActions } from "redux/slices/background";
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import ImageService from "services/image.service";
 import SocketService from "services/socket.service";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import useEffectOnce from "hooks/useEffectOnce";
 
 const cache = createCache({ key: "css", prepend: true });
@@ -35,9 +37,9 @@ export default function App() {
     (state) => state.background
   );
   useEffect(() => {
-    console.log("this is user data for current user", user);
     SocketService.join(user);
     SocketService.getCurrent();
+    console.log("this is user data for current user", user);
   }, []);
 
   useEffect(() => {
@@ -101,6 +103,8 @@ export default function App() {
           />
         </video>
       )}
+      <ToastContainer position="bottom-right" />
+
       <SnackbarProvider
         maxSnack={5}
         hideIconVariant

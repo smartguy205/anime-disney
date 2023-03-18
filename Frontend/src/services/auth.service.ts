@@ -2,6 +2,7 @@ import http from "./http.service";
 import Promisable from "./promisable.service";
 import { authActions } from "redux/slices/auth";
 import { getAppDispatch } from "utils/dispatch.util";
+import SocketService from "./socket.service";
 import { AppDispatch } from "redux/store";
 import { reset } from "redux-form";
 
@@ -186,12 +187,15 @@ const AuthService = {
     return [success, error];
   },
 
-  logout: () => {
+  logout: async () => {
+    // http.setJWT();
     const dispatch = getAppDispatch();
-
+    // const [success, error]: any = await Promisable.asPromise(
+    //   http.post("/auth/logout")
+    // );
     localStorage.removeItem("token");
 
-    dispatch?.(authActions.logout());
+    // dispatch?.(authActions.logout());
     dispatch?.(authActions.setUser(null));
   },
 };

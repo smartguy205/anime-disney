@@ -5,14 +5,17 @@ import { messageActions } from "redux/slices/message";
 import AuthService from "./auth.service";
 import MessageService from "./message.service";
 
+
 const api = process.env.REACT_APP_API_URL
 // const socket = io(`${api}`);
 // const socket = io("https://api.animedisney.com");
+
 const socket = io("http://localhost:3001");
 const SocketService = {
+
   join: (user: any) => {
     let r = (Math.random() + 1).toString(36).substring(7);
-    let name = "Anime" + r;
+    let name = '';
     let socketId = localStorage.getItem("socketId");
     socket.emit(
       "join",
@@ -42,16 +45,76 @@ const SocketService = {
     });
   },
 
-  send: (value: any) => {
-    socket.emit("sendMessage", value, () => console.log("done"));
+  send: async (value: any) => {
+    try {
+      await socket.emit("sendMessage", value, () => console.log("done"));
+    } catch (error) {
+
+    }
+
   },
 
-  message: (id: any, dispatch: AppDispatch) => {
-    socket.on("message", (message: any) => {
-      dispatch(messageActions.addMessage(message));
-      MessageService.addMessage(id, message);
-    });
+  message: async (id: any, dispatch: AppDispatch) => {
+    try {
+      interface UserData {
+        relationship: string;
+        property: string;
+        role: string;
+        online: boolean;
+        _id: string;
+        dob: string;
+        email: string;
+        name: string;
+        race: string;
+        gender: string;
+        password: string | null;
+        age: string;
+        zodiac: string;
+        star: string;
+        planet: string;
+        createdAt: string;
+        updatedAt: string;
+        __v: number;
+      }
+      socket.removeAllListeners("message")
+      socket.on("message", (message: any) => {
+        // console.log(message); // Log message here
+
+        if (message.userId === null) {
+          dispatch(messageActions.addMessage(message));
+          MessageService.addMessage(id, message);
+        } else {
+          const user = localStorage.getItem('user')
+          if (user !== null) {
+            const visitedUser = JSON.parse(user) as UserData;
+            const newMessage = {
+              sender: {
+                name: visitedUser.name,
+                race: visitedUser.race
+              },
+              message: message.message,
+              createdAt: message.createdAt,
+              attachment: message.attachment,
+              id: message.id
+            }
+            const newMessageForDatabase = {
+              message: message.message,
+              createdAt: message.createdAt,
+              attachment: message.attachment,
+              name: visitedUser.race,
+              id: message.id
+            }
+            dispatch(messageActions.addMessage(newMessage))
+            MessageService.addMessage(id, newMessageForDatabase);
+          }
+        }
+      });
+
+    } catch (error) {
+      console.log(error);
+    }
   },
+
 };
 
 export default SocketService;

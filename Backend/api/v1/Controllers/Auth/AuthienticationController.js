@@ -36,7 +36,7 @@ exports.signUp = tryCatchAsync(async (req, res, next) => {
     throw new AppError(`Email ${email} already exist`, badRequest);
 
   const user = await User.create({ role: "user", ...req.body });
-
+  console.log(user);
   const token = generateJWT(user._id);
 
   let response_data = { user: user, token: token };
@@ -171,11 +171,14 @@ exports.login = tryCatchAsync(async (req, res, next) => {
   if (!password) {
     return next(new AppError("Password  field is required", badRequest));
   }
-  const current_user = await User.findOne({ email }).select("+password");
+  const current_user = await User.findOne({ email });
+  console.log(current_user);
   if (current_user) {
     if (password === current_user.password) {
-      current_user.password = null;
+      // current_user.password = null;
       const token = generateJWT(current_user._id);
+      current_user.online = true;
+      current_user.save();
       let response_data = { user: current_user, token: token };
       return apiResponse.successResponse(res, response_data, "", success);
     }
@@ -500,3 +503,35 @@ exports.outfit = tryCatchAsync(async (req, res, next) => {
     success
   );
 });
+
+// exports.logout = tryCatchAsync(async (req, res, next) => {
+//   let token;
+//   if (
+//     req.headers.authorization &&
+//     req.headers.authorization.startsWith("Bearer")
+//   ) {
+//     token = req.headers.authorization.split(" ")[1];
+//   }
+//   if (!token) {
+//     return next(new AppError("Unauthorized", unauthorized));
+//   }
+//   const decoded_token = await promisify(jwt.verify)(
+//     token,
+//     process.env.JWT_SECRET
+//   );
+//   const current_user = await User.findById(decoded_token.id).select(
+//     "+password"
+//   );
+
+//   current_user.online = false;
+
+//   await current_user.save();
+
+//   let response_data = { user: current_user };
+//   return apiResponse.successResponse(
+//     res,
+//     response_data,
+//     "User log out",
+//     success
+//   );
+// });

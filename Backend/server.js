@@ -33,15 +33,15 @@ const io = socket(running_server, {
   },
 });
 //store all online users inside this map
-const users = [];
+let users = [];
 
-const addUser = ({ name, id, room }) => {
+const addUser = ({ name, id, online, userId, room }) => {
   name = name.trim().toLowerCase();
   room = room.trim().toLowerCase();
 
   const index = users.findIndex((user) => id === user.id && room === user.room);
 
-  const user = { name, id, room };
+  const user = { name, id, online, userId, room };
   if (index === -1) {
     users.push(user);
   }
@@ -49,59 +49,106 @@ const addUser = ({ name, id, room }) => {
   return { user };
 };
 
+const updateOffLineUser = (offLineId, NewUser) => {
+  const index = users.findIndex((user) => user.id == offLineId);
+  if (index != -1) {
+    users[index] = NewUser;
+  }
+};
+
+const disableOnline = (id) => {
+  const index = users.findIndex((user) => user.id === id);
+  if (index != -1) {
+    users[index].online = false;
+    console.log("this is offline user", users[index]);
+  }
+};
 const getUser = (id) => users.find((user) => id === user.id);
 const getUsersInRoom = (room) => users.filter((user) => room === user.room);
 
 io.on("connection", (socket) => {
   global.chatSocket = socket;
-
   socket.on("join", ({ name, room, id }, callback) => {
-    console.log("ssss", id, name, room);
-    console.log("this is socket", socket.id);
-    const { user, error } = addUser({
-      id: id ? id : socket.id,
-      name,
-      room,
-    });
+    const offLineUsers =
+      users.length !== 0 ? users.filter((user) => user.online === false) : [];
+    if (offLineUsers.length === 0) {
+      const usersLength = users.length;
+      let userName = "human" + usersLength;
+      const { user, error } = addUser({
+        userid: id ? id : null,
+        id: socket.id,
+        name: userName,
+        online: true,
+        room,
+      });
 
-    if (error) return callback(error);
+      if (error) return callback(error);
 
-    io.to(user.id).emit("getCurrent", user);
+      io.to(user.id).emit("getCurrent", user);
 
-    socket.join(user.room);
+      socket.join(user.room);
 
-    io.to(user.room).emit("roomData", {
-      room: user.room,
-      users: getUsersInRoom(user.room),
-    });
+      io.to(user.room).emit("roomData", {
+        room: user.room,
+        users: getUsersInRoom(user.room),
+      });
 
-    callback(user);
+      callback(user);
+    } else {
+      const offlineuser = offLineUsers[0];
+
+      const user = {
+        userid: id ? id : null,
+        id: socket.id,
+        name: offlineuser.name,
+        room: offlineuser.room,
+        online: true,
+      };
+
+      updateOffLineUser(offlineuser.id, user);
+      io.to(user.id).emit("getCurrent", user);
+
+      socket.join(user.room);
+
+      io.to(user.room).emit("roomData", {
+        room: user.room,
+        users: getUsersInRoom(user.room),
+      });
+
+      callback(user);
+    }
   });
 
   socket.on("sendMessage", (data, callback) => {
+    // console.log(users);
     const user = getUser(data.id);
+    console.log(data.id);
     console.log("this is sending user", user);
     if (user) {
-      io.to(user.room).emit("message", {
+      socket.emit("message", {
+        userId: data.userid,
         id: user.id,
         createdAt: new Date(),
         name: user.name,
         message: data.message,
         attachment: data.attachment,
       });
-      io.to(user.room).emit("roomData", {
-        room: user.room,
-        users: getUsersInRoom(user.room),
-      });
+      // io.to(user.room).emit("roomData", {
+      //   room: user.room,
+      //   users: getUsersInRoom(user.room),
+      // });
     }
     callback();
   });
-});
-
-process.on("unhandledRejection", (err) => {
-  console.log(err.name, err.message);
-  console.log("Unhadles Rejection", err);
-  running_server.close(() => {
-    process.exit(1);
+  socket.on("disconnect", () => {
+    disableOnline(socket.id);
   });
 });
+
+// process.on("unhandledRejection", (err) => {
+//   console.log(err.name, err.message);
+//   console.log("Unhadles Rejection", err);
+//   running_server.close(() => {
+//     process.exit(1);
+//   });
+// });

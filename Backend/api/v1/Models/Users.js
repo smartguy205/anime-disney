@@ -131,6 +131,11 @@ const userSchema = new mongoose.Schema(
       // minlength: 4,
       // select: false,
     },
+
+    online: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true }
 );
