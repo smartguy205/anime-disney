@@ -7,7 +7,8 @@ const initialState: MessageState = {
   privateClient: {
   },
   clientId: '',
-  isPrivate: false
+  isPrivate: false,
+  privateArray: []
 };
 
 export const messageSlice = createSlice({
@@ -15,6 +16,7 @@ export const messageSlice = createSlice({
   initialState,
   reducers: {
     setPrivateChat: (state, action) => {
+      state.privateArray.push(action.payload)
       state.privateClient = action.payload;
       state.clientId = action.payload._id;
       state.isPrivate = true

@@ -34,6 +34,17 @@ exports.addChatPrivate = tryCatchAsync(async (req, res) => {
   let response_data = { message: data };
   return apiResponse.successResponse(res, response_data, "", success);
 });
+
+exports.getPrivateChat = tryCatchAsync(async (req, res) => {
+  const chat = await (
+    await GroupChat.find({
+      $or: [{ userId: req.body.id }, { clientid: req.body.id }],
+    })
+  ).sort({ updatedAt: 1 });
+
+  let response_data = { messages: chat };
+  return apiResponse.successResponse(res, response_data, "", success);
+});
 exports.getChat = tryCatchAsync(async (req, res) => {
   const chat = await GroupChat.find().populate("sender").sort({ updatedAt: 1 });
 

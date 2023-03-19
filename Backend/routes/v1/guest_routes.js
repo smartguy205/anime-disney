@@ -43,6 +43,7 @@ router.delete("/video/:id", guest_controller.deleteVideo);
 router.get("/deleteAllVideos", guest_controller.deleteAllVideos);
 
 router.get("/getChat/", message_controller.getChat);
+router.post("/getPrivateChat", message_controller.getPrivateChat);
 router.post("/addChatPrivate/", message_controller.addChatPrivate);
 router.post("/addChat/", message_controller.addChat);
 router.post("/addMsg/", message_controller.addMessage);
