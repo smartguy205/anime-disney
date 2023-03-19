@@ -14,7 +14,6 @@ export default function ChatBox({ type }: any) {
     // console.log(localStorage.getItem("socketId"));
     // values.id = localStorage.getItem("socketId");
     // SocketService.send(values);
-    console.log(values);
   };
 
   return <ChatBoxForm />;

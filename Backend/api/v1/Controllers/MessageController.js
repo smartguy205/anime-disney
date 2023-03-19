@@ -21,6 +21,7 @@ exports.addChat = tryCatchAsync(async (req, res) => {
 exports.addChatPrivate = tryCatchAsync(async (req, res) => {
   const { sender, name, message, clientid, isPrivate, userId, attachment } =
     req.body;
+
   const data = await PrivateChat.create({
     name,
     message,
@@ -37,7 +38,7 @@ exports.addChatPrivate = tryCatchAsync(async (req, res) => {
 
 exports.getPrivateChat = tryCatchAsync(async (req, res) => {
   console.log("this is user id", req.body.id);
-  const chat = await GroupChat.find({
+  const chat = await PrivateChat.find({
     $or: [{ userId: req.body.id }, { clientid: req.body.id }],
   });
 

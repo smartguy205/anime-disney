@@ -35,13 +35,13 @@ const io = socket(running_server, {
 //store all online users inside this map
 let users = [];
 
-const addUser = ({ name, id, online, userId, room }) => {
+const addUser = ({ name, id, online, userid, room }) => {
   name = name.trim().toLowerCase();
   room = room.trim().toLowerCase();
 
   const index = users.findIndex((user) => id === user.id && room === user.room);
 
-  const user = { name, id, online, userId, room };
+  const user = { name, id, online, userid, room };
   if (index === -1) {
     users.push(user);
   }
@@ -60,7 +60,6 @@ const disableOnline = (id) => {
   const index = users.findIndex((user) => user.id === id);
   if (index != -1) {
     users[index].online = false;
-    console.log("this is offline user", users[index]);
   }
 };
 const getUser = (id) => users.find((user) => id === user.id);
@@ -70,16 +69,16 @@ const getUsersInRoom = (room) => users.filter((user) => room === user.room);
 
 io.on("connection", (socket) => {
   global.chatSocket = socket;
-  socket.on("join", ({ name, room, id }, callback) => {
+  socket.on("join", ({ name, room, id, userId, isLogin }, callback) => {
     const offLineUsers =
       users.length !== 0 ? users.filter((user) => user.online === false) : [];
     if (offLineUsers.length === 0) {
       const usersLength = users.length;
       let userName = "human" + usersLength;
       const { user, error } = addUser({
-        userid: id ? id : null,
+        userid: isLogin ? userId : null,
         id: socket.id,
-        name: userName,
+        name: isLogin ? name : userName,
         online: true,
         room,
       });
@@ -100,14 +99,15 @@ io.on("connection", (socket) => {
       const offlineuser = offLineUsers[0];
 
       const user = {
-        userid: id ? id : null,
+        userid: isLogin ? userId : null,
         id: socket.id,
-        name: offlineuser.name,
-        room: offlineuser.room,
+        name: isLogin ? name : userName,
         online: true,
+        room,
       };
 
       updateOffLineUser(offlineuser.id, user);
+
       io.to(user.id).emit("getCurrent", user);
 
       socket.join(user.room);
@@ -124,9 +124,7 @@ io.on("connection", (socket) => {
   socket.on("sendMessagePrivate", (data, callback) => {
     const user = getUser(data.id);
     const client = getUserWithId(data.client._id);
-    console.log(data);
 
-    console.log("this is sending user", user);
     if (client) {
       io.to(client.id).emit("sendPrivateMessageToClient", data);
     }
@@ -143,8 +141,7 @@ io.on("connection", (socket) => {
   socket.on("sendMessage", (data, callback) => {
     // console.log(users);
     const user = getUser(data.id);
-    console.log(data.id);
-    console.log("this is sending user", user);
+
     if (user) {
       socket.emit("message", {
         userId: data.userid,

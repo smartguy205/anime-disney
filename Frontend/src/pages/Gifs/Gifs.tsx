@@ -53,7 +53,6 @@ export default function Gifs() {
     if (user) AuthService.background(data, dispatch);
     else ImageService.background(data, dispatch);
   };
-  console.log("Hii", location.pathname.includes("profile"));
 
   return (
     <>

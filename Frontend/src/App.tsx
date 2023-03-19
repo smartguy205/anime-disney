@@ -39,15 +39,12 @@ export default function App() {
   useEffect(() => {
     SocketService.join(user);
     SocketService.getCurrent();
-    console.log("this is user data for current user", user);
   }, []);
 
   useEffect(() => {
     SocketService.connections(dispatch);
   }, [dispatch]);
   useEffect(() => {
-    console.log("Hiiii", visitedUser?.background);
-
     if (visitedUser) {
       dispatch(backgroundActions.setBackground(visitedUser?.background));
       dispatch(backgroundActions.setProperty(visitedUser?.property));

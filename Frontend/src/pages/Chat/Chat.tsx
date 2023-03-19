@@ -10,22 +10,26 @@ import Carousel, {
   useSnapCarousel,
   SnapCarouselResult,
 } from "react-snap-carousel";
+import "./style.css";
 
 // import ReactHtmlParser from "react-html-parser";
 
 export default function Chat() {
+  const handleClick = () => {
+    console.log("hhhh");
+  };
   const dispatch = useAppDispatch();
   const scrollRef_ = useRef<HTMLDivElement>(null);
   const { user } = useAppSelector((state) => state.auth);
   const message = useAppSelector((state) => state.message);
   const messages = message.isPrivate
     ? message.privateMessages.filter(
-        (item) => item.clientid == message.clientId
+        (item) =>
+          item.clientid == message.clientId || item.userId == message.clientId
       )
     : message.messages;
   useEffect(() => {
     if (user) {
-      console.log(user);
       MessageService.getPrivateMessages(user._id, dispatch);
     }
     MessageService.getMessages(dispatch);
@@ -54,6 +58,9 @@ export default function Chat() {
 
   const convert = (item: String) => {
     return item.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+  };
+  const deleteUser = (user: any) => {
+    dispatch(messageActions.deletePrivateList(user));
   };
 
   return (
@@ -109,6 +116,7 @@ export default function Chat() {
                   overflow: "hidden",
                 }}>
                 <span
+                  className="hover-effect"
                   style={{
                     padding: "6px",
                     marginLeft: "12px",
@@ -118,6 +126,11 @@ export default function Chat() {
                   }}
                   onClick={() => goToPrivateChat(user)}>
                   {user.name}
+                  <span
+                    className="delete-icon"
+                    onClick={() => deleteUser(user)}>
+                    ❌
+                  </span>
                 </span>
               </li>
             ))}
