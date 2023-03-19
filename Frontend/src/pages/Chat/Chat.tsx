@@ -7,6 +7,8 @@ import SocketService from "services/socket.service";
 import { LightgalleryItem } from "react-lightgallery";
 import { messageActions } from "redux/slices/message";
 import { useSnapCarousel } from "react-snap-carousel";
+// import ReactHtmlParser from "react-html-parser";
+
 export default function Chat() {
   const dispatch = useAppDispatch();
   const scrollRef_ = useRef<HTMLDivElement>(null);
@@ -37,12 +39,36 @@ export default function Chat() {
   const goToPrivateChat = (user: any) => {
     dispatch(messageActions.setPrivateChat(user));
   };
-  const { scrollRef, pages, activePageIndex, next, prev, goTo } =
+  const goToPrivateChatAndStart = (user: any) => {
+    dispatch(messageActions.addPrivateList(user));
+    dispatch(messageActions.setPrivateChat(user));
+  };
+  let { scrollRef, pages, activePageIndex, next, prev, goTo } =
     useSnapCarousel();
+
+  const convert = (item: any) => {
+    const parser: DOMParser = new DOMParser();
+
+    // Parse the HTML string into a DOM element
+    const parsedHtml: Document = parser.parseFromString(item, "text/html");
+
+    // Extract the href attribute value from the anchor tag
+    const href: string | undefined =
+      parsedHtml.querySelector("a")?.getAttribute("href") ?? "";
+    return (
+      <div>
+        {parsedHtml.body.childNodes}{" "}
+        <a href={href} target="_blank" rel="noopener noreferrer">
+          {href}
+        </a>
+      </div>
+    );
+  };
+
   return (
     <>
-      {!message.isPrivate ? (
-        <div style={{ display: "flex", justifyItems: "center" }}>
+      <div style={{ display: "flex", justifyItems: "center" }}>
+        {activePageIndex > 1 && (
           <div
             style={{
               padding: "6px",
@@ -57,60 +83,62 @@ export default function Chat() {
             onClick={() => prev()}>
             Prev
           </div>
-          <div
-            style={{
-              padding: "6px",
-              marginLeft: "10px",
+        )}
+        <div
+          style={{
+            padding: "6px",
+            marginLeft: "10px",
 
-              marginTop: "21px",
-              height: "40px",
-              width: "10px",
-              background: "transparent",
-            }}></div>
-          <ul
-            ref={scrollRef}
-            style={{
-              paddingLeft: "10px",
-              paddingRight: "10px",
-              display: "flex",
-              overflow: "hidden",
-              scrollSnapType: "x mandatory",
-            }}>
-            {users.map((user: any, index: number) => (
-              <li
+            marginTop: "21px",
+            height: "40px",
+            width: "10px",
+            background: "transparent",
+          }}></div>
+        <ul
+          ref={scrollRef}
+          style={{
+            paddingLeft: "10px",
+            paddingRight: "10px",
+            display: "flex",
+            overflow: "hidden",
+            scrollSnapType: "x mandatory",
+          }}>
+          {message.privateArray.map((user: any, index: number) => (
+            <li
+              style={{
+                height: "50px",
+                flexShrink: 0,
+                color: "#fff",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                overflow: "hidden",
+              }}>
+              <span
                 style={{
-                  height: "50px",
-                  flexShrink: 0,
-                  color: "#fff",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  overflow: "hidden",
-                }}>
-                <span
-                  style={{
-                    padding: "6px",
-                    marginLeft: "12px",
-                    cursor: "pointer",
-                    border: "2px solid white",
-                    background: "transparent",
-                  }}
-                  onClick={() => goToPrivateChat(user)}>
-                  {user.name}
-                </span>
-              </li>
-            ))}
-          </ul>
-          <div
-            style={{
-              padding: "6px",
-              marginLeft: "10px",
+                  padding: "6px",
+                  marginLeft: "12px",
+                  cursor: "pointer",
+                  border: "2px solid white",
+                  background: "transparent",
+                }}
+                onClick={() => goToPrivateChat(user)}>
+                {user.name}
+              </span>
+            </li>
+          ))}
+        </ul>
+        <div
+          style={{
+            padding: "6px",
+            marginLeft: "10px",
 
-              marginTop: "21px",
-              height: "40px",
-              width: "10px",
-              background: "transparent",
-            }}></div>
+            marginTop: "21px",
+            height: "40px",
+            width: "10px",
+            background: "transparent",
+          }}></div>
+        {pages.length > 1 && (
           <div
             style={{
               padding: "6px",
@@ -124,97 +152,12 @@ export default function Chat() {
             onClick={() => next()}>
             Next
           </div>
-        </div>
-      ) : (
-        <div style={{ display: "flex", justifyItems: "center" }}>
-          <div
-            style={{
-              padding: "6px",
-              marginLeft: "10px",
-
-              marginTop: "21px",
-              height: "40px",
-              cursor: "pointer",
-              border: "2px solid white",
-              background: "transparent",
-            }}
-            onClick={() => prev()}>
-            Prev
-          </div>
-          <div
-            style={{
-              padding: "6px",
-              marginLeft: "10px",
-
-              marginTop: "21px",
-              height: "40px",
-              width: "10px",
-              background: "transparent",
-            }}></div>
-          <ul
-            ref={scrollRef}
-            style={{
-              paddingLeft: "10px",
-              paddingRight: "10px",
-              display: "flex",
-              overflow: "hidden",
-              scrollSnapType: "x mandatory",
-            }}>
-            {message.privateArray.map((user: any, index: number) => (
-              <li
-                style={{
-                  height: "50px",
-                  flexShrink: 0,
-                  color: "#fff",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  overflow: "hidden",
-                }}>
-                <span
-                  style={{
-                    padding: "6px",
-                    marginLeft: "12px",
-                    cursor: "pointer",
-                    border: "2px solid white",
-                    background: "transparent",
-                  }}>
-                  {user.name}
-                </span>
-              </li>
-            ))}
-          </ul>
-          <div
-            style={{
-              padding: "6px",
-              marginLeft: "10px",
-
-              marginTop: "21px",
-              height: "40px",
-              width: "10px",
-              background: "transparent",
-            }}></div>
-          <div
-            style={{
-              padding: "6px",
-              marginLeft: "5px",
-              margin: "auto",
-              height: "40px",
-              cursor: "pointer",
-              border: "2px solid white",
-              background: "transparent",
-            }}
-            onClick={() => next()}>
-            Next
-          </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* <div>
         {activePageIndex + 1} / {pages.length}
-      </div>
-      <button onClick={() => prev()}>Prev</button>
-      <button onClick={() => next()}>Next</button> */}
+      </div> */}
 
       <p
         style={{ marginBottom: "10px", cursor: "pointer" }}
@@ -227,20 +170,26 @@ export default function Chat() {
             <div className="chat-user-data">
               <LightgalleryItem
                 src={
-                  message.sender && message.sender?.profile_image
-                    ? message.sender?.profile_image
+                  message.sender && message.sender.profile_picture
+                    ? process.env.REACT_APP_FILE_URL +
+                      "/" +
+                      message.sender.profile_picture
                     : GuestIcon
                 }>
                 <img
                   src={
-                    message.sender && message.sender?.profile_image
-                      ? message.sender?.profile_image
+                    message.sender && message.sender.profile_picture
+                      ? process.env.REACT_APP_FILE_URL +
+                        "/" +
+                        message.sender.profile_picture
                       : GuestIcon
                   }
                   alt="Guest"
                 />
               </LightgalleryItem>
-              <p style={{ textTransform: "capitalize" }}>
+              <p
+                style={{ textTransform: "capitalize", cursor: "pointer" }}
+                onClick={() => goToPrivateChatAndStart(message.sender)}>
                 {message.sender != null && message.sender.name}
               </p>
             </div>
@@ -251,10 +200,8 @@ export default function Chat() {
                     ? message.sender.race
                     : message.name}
                 </p>
-                <div>
-                  <div
-                    dangerouslySetInnerHTML={{ __html: message.message }}></div>
-                </div>
+                {/* {message.message != null && convert(message.message)} */}
+                <div dangerouslySetInnerHTML={{ __html: message.message }} />
                 {message.attachment != "" && (
                   <div>
                     <LightgalleryItem

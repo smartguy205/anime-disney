@@ -16,10 +16,16 @@ export const messageSlice = createSlice({
   initialState,
   reducers: {
     setPrivateChat: (state, action) => {
-      state.privateArray.push(action.payload)
       state.privateClient = action.payload;
       state.clientId = action.payload._id;
       state.isPrivate = true
+    },
+    addPrivateList: (state, action) => {
+      const index = state.privateArray.findIndex(item => item._id === action.payload._id)
+      if (index == -1) {
+        state.privateArray.push(action.payload)
+      }
+
     },
     addMessage: (state, action) => {
       state.messages.push(action.payload);

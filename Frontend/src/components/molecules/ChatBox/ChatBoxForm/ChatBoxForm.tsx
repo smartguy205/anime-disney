@@ -40,7 +40,13 @@ function ChatBoxForm() {
       if (message) {
         const rexpURL = /(((https?:\/\/)|(www\.))[^\s]+)/g;
         new_message = message.replace(rexpURL, (url: any) => {
-          return '<a href="' + url + '" target="_blank">' + url + "</a>";
+          return (
+            '<a href="' +
+            url +
+            '" target="_blank" style="text-decoration: none; color: white; cursor: pointer">' +
+            url +
+            "</a>"
+          );
         });
       }
       if (attachment) {

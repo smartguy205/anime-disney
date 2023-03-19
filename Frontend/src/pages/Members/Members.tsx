@@ -15,7 +15,7 @@ export default function Members() {
     UsersService.getUsers();
   }, []);
   const goToPrivateChat = (user: any) => {
-    dispatch(messageActions.setPrivateChat(user));
+    dispatch(messageActions.addPrivateList(user));
   };
   return (
     <div>
