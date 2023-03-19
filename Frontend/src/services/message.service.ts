@@ -14,9 +14,6 @@ const MessageService = {
       attachment: data.attachment
     };
 
-    console.log("sssss----", data.message, typeof data.message)
-
-    console.log('payload is ', payload)
     const [success, error]: any = await Promisable.asPromise(
       http.post("guest/addChat", payload)
     );

@@ -30,7 +30,6 @@ function ChatBoxForm() {
     setAttachment(e.target.files[0]);
   };
   const sendMessage = async () => {
-    console.log(user);
     if (attachment === null && message === "") {
       toast.error("Enter message", {
         position: toast.POSITION.BOTTOM_RIGHT,
@@ -61,7 +60,6 @@ function ChatBoxForm() {
         );
         if (response.status === 200) {
           if (response.data.message == "success") {
-            console.log(response.data.data.url);
             if (messageInfo.isPrivate) {
               const valuesPrivate = {
                 id: localStorage.getItem("socketId"),
@@ -101,7 +99,6 @@ function ChatBoxForm() {
             client: messageInfo.privateClient,
             createdAt: new Date(),
           };
-          console.log(valuesPrivate);
           SocketService.sendPrivate(valuesPrivate);
         } else {
           const values = {

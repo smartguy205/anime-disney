@@ -1,0 +1,9 @@
+.hover-effect:hover .delete-icon {
+  display: inline-block;
+}
+
+.delete-icon {
+  display: none;
+  margin-left: 5px;
+  cursor: pointer;
+}

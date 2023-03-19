@@ -19,7 +19,7 @@ const SocketService = {
     let socketId = localStorage.getItem("socketId");
     socket.emit(
       "join",
-      { name: user ? user.name : name, room: "room", id: socketId },
+      { name: user ? user.name : name, room: "room", id: socketId, userId: user ? user._id : '', isLogin: user ? true : false },
       (data: any, error: any) => {
         if (error) {
           ToasterService.showError(error);
@@ -32,13 +32,11 @@ const SocketService = {
   },
   connections: (dispatch: AppDispatch) => {
     socket.on("roomData", ({ users }: any) => {
-      console.log("Here is socket room data", users);
       // dispatch(userActions.setRoomUsers(users));
     });
   },
 
   getCurrent: () => {
-    console.log("this is get current user");
     socket.on("getCurrent", (data: any) => {
       console.log("Here is Current user", data);
       localStorage.setItem("socketId", data.id);

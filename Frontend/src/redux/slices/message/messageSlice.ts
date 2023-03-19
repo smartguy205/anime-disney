@@ -30,6 +30,12 @@ export const messageSlice = createSlice({
       }
 
     },
+    deletePrivateList: (state, action) => {
+      const index = state.privateArray.findIndex(item => item._id == action.payload._id)
+      const newArray = [...state.privateArray]; // create a shallow copy of the array
+      newArray.splice(index, 1); // remove the element at the specified index
+      state.privateArray = newArray;
+    },
     addMessage: (state, action) => {
       state.messages.push(action.payload);
     },

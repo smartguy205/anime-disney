@@ -36,7 +36,6 @@ exports.signUp = tryCatchAsync(async (req, res, next) => {
     throw new AppError(`Email ${email} already exist`, badRequest);
 
   const user = await User.create({ role: "user", ...req.body });
-  console.log(user);
   const token = generateJWT(user._id);
 
   let response_data = { user: user, token: token };
@@ -172,7 +171,6 @@ exports.login = tryCatchAsync(async (req, res, next) => {
     return next(new AppError("Password  field is required", badRequest));
   }
   const current_user = await User.findOne({ email });
-  console.log(current_user);
   if (current_user) {
     if (password === current_user.password) {
       // current_user.password = null;
@@ -219,7 +217,6 @@ exports.recover = tryCatchAsync(async (req, res) => {
 
   const user = await User.findOne({ email });
   // setup email data
-  console.log();
   let mailOptions = {
     from: "smart@api.animedisney.com",
     to: email,
@@ -361,7 +358,6 @@ exports.delete = tryCatchAsync(async (req, res, next) => {
   }
 
   const user_id = decoded_token ? decoded_token.id : "";
-  console.log({ user_id });
   const user = await User.findOneAndDelete({ _id: user_id });
 
   let response_data = {};
