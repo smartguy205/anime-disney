@@ -53,7 +53,36 @@ const SocketService = {
     }
 
   },
+  sendPrivate: async (value: any) => {
+    try {
+      await socket.emit("sendMessagePrivate", value, () => console.log("done"));
+    } catch (error) {
 
+    }
+
+  },
+  messagePrivateToUser: async (id: any, dispatch: AppDispatch) => {
+    try {
+      socket.removeAllListeners("sendPrivateMessageToUser")
+      socket.on("sendPrivateMessageToUser", (message: any) => {
+        const new_private_message = {
+          clientid: message.client._id,
+          createdAt: message.createdAt,
+          isPrivate: message.isPrivate,
+          message: message.message,
+          attachment: message.attachment,
+          name: message.user.name,
+          userId: message.user._id,
+          sender: message.user
+        }
+        dispatch(messageActions.addPrivateMessage(new_private_message));
+        MessageService.addPrivateMessage(id, new_private_message);
+      })
+
+    } catch (error) {
+
+    }
+  },
   message: async (id: any, dispatch: AppDispatch) => {
     try {
       interface UserData {

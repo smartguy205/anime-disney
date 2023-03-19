@@ -2,6 +2,7 @@ const tryCatchAsync = require("../../../util/tryCatchAsync");
 const apiResponse = require("../../../util/apiResponse");
 const Messages = require("../Models/Messages");
 const GroupChat = require("../Models/GroupChat");
+const PrivateChat = require("../Models/PrivateChat");
 const { success } = require("../../../util/statusCode").statusCode;
 
 exports.addChat = tryCatchAsync(async (req, res) => {
@@ -17,7 +18,22 @@ exports.addChat = tryCatchAsync(async (req, res) => {
   let response_data = { message: data };
   return apiResponse.successResponse(res, response_data, "", success);
 });
+exports.addChatPrivate = tryCatchAsync(async (req, res) => {
+  const { sender, name, message, clientid, isPrivate, userId, attachment } =
+    req.body;
+  const data = await PrivateChat.create({
+    name,
+    message,
+    sender,
+    attachment,
+    clientid,
+    isPrivate,
+    userId,
+  });
 
+  let response_data = { message: data };
+  return apiResponse.successResponse(res, response_data, "", success);
+});
 exports.getChat = tryCatchAsync(async (req, res) => {
   const chat = await GroupChat.find().populate("sender").sort({ updatedAt: 1 });
 
