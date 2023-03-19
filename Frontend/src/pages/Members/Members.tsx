@@ -14,8 +14,8 @@ export default function Members() {
   useEffect(() => {
     UsersService.getUsers();
   }, []);
-  const goToPrivateChat = (userId: String) => {
-    dispatch(messageActions.setPrivateChat(userId));
+  const goToPrivateChat = (user: any) => {
+    dispatch(messageActions.setPrivateChat(user));
   };
   return (
     <div>
@@ -44,7 +44,7 @@ export default function Members() {
               /> */}
               <p
                 style={{ textTransform: "capitalize" }}
-                onClick={() => goToPrivateChat(user._id)}>
+                onClick={() => goToPrivateChat(user)}>
                 {user.name}
               </p>
             </div>

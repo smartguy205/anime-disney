@@ -8231,6 +8231,11 @@
   "resolved" "https://registry.npmjs.org/react-simple-image-viewer/-/react-simple-image-viewer-1.2.2.tgz"
   "version" "1.2.2"
 
+"react-snap-carousel@^0.3.1":
+  "integrity" "sha512-vRrwBV4sC3IP5JQukqAVwELDgOrJ2fZ7WT1aZY7HVDiSTDGXAl6ykvn5BV++O4f+cQ2Vmad1Vp996ytz1QQ03w=="
+  "resolved" "https://registry.npmjs.org/react-snap-carousel/-/react-snap-carousel-0.3.1.tgz"
+  "version" "0.3.1"
+
 "react-swipeable@^6.2.0":
   "integrity" "sha512-Oz7nSFrssvq2yvy05aNL3F+yBUqSvLsK6x1mu+rQFOpMdQVnt4izKt1vyjvvTb70q6GQOaSpaB6qniROW2MAzQ=="
   "resolved" "https://registry.npmjs.org/react-swipeable/-/react-swipeable-6.2.2.tgz"

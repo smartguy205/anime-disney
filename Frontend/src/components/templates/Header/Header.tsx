@@ -1,10 +1,12 @@
 import "./Header.css";
 import { Grid } from "@mui/material";
-import { useAppDispatch } from "redux/hooks";
+import { useAppDispatch, useAppSelector } from "redux/hooks";
 import { tabActions } from "redux/slices/tab";
 import { useNavigate } from "react-router-dom";
+import { messageActions } from "redux/slices/message";
 
 export default function Header() {
+  const message = useAppSelector((state) => state.message);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   return (
@@ -17,8 +19,8 @@ export default function Header() {
                 onClick={() => {
                   navigate("/");
                   dispatch(tabActions.setTab("chat"));
-                }}
-              >
+                  dispatch(messageActions.setPublic());
+                }}>
                 Chat
               </li>
               <li onClick={() => dispatch(tabActions.setTab("gifs"))}>Gifs</li>
@@ -35,8 +37,7 @@ export default function Header() {
                 onClick={() => {
                   navigate("/");
                   dispatch(tabActions.setTab("user"));
-                }}
-              >
+                }}>
                 User
               </li>
             </ul>

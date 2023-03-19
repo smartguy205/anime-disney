@@ -64,6 +64,8 @@ const disableOnline = (id) => {
   }
 };
 const getUser = (id) => users.find((user) => id === user.id);
+const getUserWithId = (id) => users.find((user) => user.userid === id);
+
 const getUsersInRoom = (room) => users.filter((user) => room === user.room);
 
 io.on("connection", (socket) => {
@@ -119,6 +121,31 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("sendMessagePrivate", (data, callback) => {
+    const user = getUser(data.id);
+    const client = getUserWithId(data.client._id);
+    console.log(data);
+
+    console.log("this is sending user", user);
+    if (client) {
+      if (data.userid) {
+        io.to(client.id).emit("sendPrivateMessageToClient", data);
+      } else {
+        data.user = user;
+        data.userid = user.id;
+        io.to(client.id).emit("sendPrivateMessageToClient", data);
+      }
+    }
+    if (data.userid) {
+      io.to(data.id).emit("sendPrivateMessageToUser", data);
+    } else {
+      data.user = user;
+      data.userid = user.id;
+      io.to(data.id).emit("sendPrivateMessageToUser", data);
+    }
+
+    callback();
+  });
   socket.on("sendMessage", (data, callback) => {
     // console.log(users);
     const user = getUser(data.id);

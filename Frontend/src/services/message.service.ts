@@ -22,7 +22,20 @@ const MessageService = {
 
     return [success, error];
   },
+  addPrivateMessage: async (id: any, data: any, dispatch?: AppDispatch) => {
 
+
+    const [success, error]: any = await Promisable.asPromise(
+      http.post("guest/addChatPrivate", data)
+    );
+
+    // if (success) {
+    //   const { message } = success.data.data;
+    //   dispatch?.(messageActions.addMessage(message));
+    // }
+
+    return [success, error];
+  },
   getMessages: async (dispatch?: AppDispatch) => {
     const [success, error]: any = await Promisable.asPromise(
       http.get("/guest/getChat")

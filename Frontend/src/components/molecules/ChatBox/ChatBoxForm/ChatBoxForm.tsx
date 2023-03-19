@@ -10,6 +10,7 @@ import { useAppSelector } from "redux/hooks";
 import "react-toastify/dist/ReactToastify.css";
 function ChatBoxForm() {
   const user = useAppSelector((state) => state.auth.user);
+  const messageInfo = useAppSelector((state) => state.message);
   const [attachment, setAttachment] = useState<File | null>(null);
   const [message, setMessage] = useState("");
   const FileInput = () => (
@@ -48,26 +49,56 @@ function ChatBoxForm() {
         if (response.status === 200) {
           if (response.data.message == "success") {
             console.log(response.data.data.url);
-            const values = {
-              id: localStorage.getItem("socketId"),
-              message: message,
-              attachment: response.data.data.url,
-              userid: user ? user._id : null,
-            };
-            SocketService.send(values);
+            if (messageInfo.isPrivate) {
+              const valuesPrivate = {
+                id: localStorage.getItem("socketId"),
+                message: message,
+                attachment: response.data.data.url,
+                userid: user ? user._id : null,
+                isPrivate: true,
+                user: user,
+                client: messageInfo.privateClient,
+                createdAt: new Date(),
+              };
+
+              SocketService.sendPrivate(valuesPrivate);
+            } else {
+              const values = {
+                id: localStorage.getItem("socketId"),
+                message: message,
+                attachment: response.data.data.url,
+                userid: user ? user._id : null,
+              };
+              SocketService.send(values);
+            }
 
             setAttachment(null);
             setMessage("");
           }
         }
       } else if (attachment === null) {
-        const values = {
-          id: localStorage.getItem("socketId"),
-          message: message,
-          attachment: "",
-          userid: user ? user._id : null,
-        };
-        SocketService.send(values);
+        if (messageInfo.isPrivate) {
+          const valuesPrivate = {
+            id: localStorage.getItem("socketId"),
+            message: message,
+            attachment: "",
+            userid: user ? user._id : null,
+            isPrivate: true,
+            user: user,
+            client: messageInfo.privateClient,
+            createdAt: new Date(),
+          };
+          console.log(valuesPrivate);
+          SocketService.sendPrivate(valuesPrivate);
+        } else {
+          const values = {
+            id: localStorage.getItem("socketId"),
+            message: message,
+            attachment: "",
+            userid: user ? user._id : null,
+          };
+          SocketService.send(values);
+        }
 
         setAttachment(null);
         setMessage("");
