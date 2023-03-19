@@ -36,7 +36,7 @@ function ChatBoxForm() {
         position: toast.POSITION.BOTTOM_RIGHT,
       });
     } else {
-      let new_message;
+      let new_message = "";
       if (message) {
         const rexpURL = /(((https?:\/\/)|(www\.))[^\s]+)/g;
         new_message = message.replace(rexpURL, (url: any) => {

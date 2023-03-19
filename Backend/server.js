@@ -128,13 +128,7 @@ io.on("connection", (socket) => {
 
     console.log("this is sending user", user);
     if (client) {
-      if (data.userid) {
-        io.to(client.id).emit("sendPrivateMessageToClient", data);
-      } else {
-        data.user = user;
-        data.userid = user.id;
-        io.to(client.id).emit("sendPrivateMessageToClient", data);
-      }
+      io.to(client.id).emit("sendPrivateMessageToClient", data);
     }
     if (data.userid) {
       io.to(data.id).emit("sendPrivateMessageToUser", data);

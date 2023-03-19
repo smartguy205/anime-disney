@@ -1,12 +1,16 @@
 import GuestIcon from "assets/Tiger.png";
 import moment from "moment";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import MessageService from "services/message.service";
 import SocketService from "services/socket.service";
 import { LightgalleryItem } from "react-lightgallery";
 import { messageActions } from "redux/slices/message";
-import { useSnapCarousel } from "react-snap-carousel";
+import Carousel, {
+  useSnapCarousel,
+  SnapCarouselResult,
+} from "react-snap-carousel";
+
 // import ReactHtmlParser from "react-html-parser";
 
 export default function Chat() {
@@ -20,13 +24,15 @@ export default function Chat() {
       )
     : message.messages;
   useEffect(() => {
-    // if (user) {
-    //   MessageService.getPrivateMessages(user._id, dispatch);
-    // }
+    if (user) {
+      console.log(user);
+      MessageService.getPrivateMessages(user._id, dispatch);
+    }
     MessageService.getMessages(dispatch);
 
     SocketService.message(user?._id, dispatch);
     SocketService.messagePrivateToUser(user?._id, dispatch);
+    SocketService.sendPrivateMessageToClient(user?._id, dispatch);
     // if(message.isPrivate) MessageService.getPrivateMessages(dispatch);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -43,32 +49,17 @@ export default function Chat() {
     dispatch(messageActions.addPrivateList(user));
     dispatch(messageActions.setPrivateChat(user));
   };
-  let { scrollRef, pages, activePageIndex, next, prev, goTo } =
+  const { scrollRef, pages, activePageIndex, next, prev, goTo } =
     useSnapCarousel();
 
-  const convert = (item: any) => {
-    const parser: DOMParser = new DOMParser();
-
-    // Parse the HTML string into a DOM element
-    const parsedHtml: Document = parser.parseFromString(item, "text/html");
-
-    // Extract the href attribute value from the anchor tag
-    const href: string | undefined =
-      parsedHtml.querySelector("a")?.getAttribute("href") ?? "";
-    return (
-      <div>
-        {parsedHtml.body.childNodes}{" "}
-        <a href={href} target="_blank" rel="noopener noreferrer">
-          {href}
-        </a>
-      </div>
-    );
+  const convert = (item: String) => {
+    return item.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
   };
 
   return (
     <>
       <div style={{ display: "flex", justifyItems: "center" }}>
-        {activePageIndex > 1 && (
+        {/* {activePageIndex > 0 && (
           <div
             style={{
               padding: "6px",
@@ -83,7 +74,7 @@ export default function Chat() {
             onClick={() => prev()}>
             Prev
           </div>
-        )}
+        )} */}
         <div
           style={{
             padding: "6px",
@@ -94,40 +85,44 @@ export default function Chat() {
             width: "10px",
             background: "transparent",
           }}></div>
-        <ul
-          ref={scrollRef}
-          style={{
-            paddingLeft: "10px",
-            paddingRight: "10px",
-            display: "flex",
-            overflow: "hidden",
-            scrollSnapType: "x mandatory",
-          }}>
-          {message.privateArray.map((user: any, index: number) => (
-            <li
-              style={{
-                height: "50px",
-                flexShrink: 0,
-                color: "#fff",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                overflow: "hidden",
-              }}>
-              <span
+        <div style={{ width: "100%", overflow: "auto" }}>
+          <ul
+            ref={scrollRef}
+            style={{
+              paddingLeft: "10px",
+              paddingRight: "10px",
+              display: "flex",
+              // overflow: "auto",
+              position: "relative",
+              scrollSnapType: "x mandatory",
+              width: "fit-content",
+            }}>
+            {message.privateArray.map((user: any, index: number) => (
+              <li
                 style={{
-                  padding: "6px",
-                  marginLeft: "12px",
-                  cursor: "pointer",
-                  border: "2px solid white",
-                  background: "transparent",
-                }}
-                onClick={() => goToPrivateChat(user)}>
-                {user.name}
-              </span>
-            </li>
-          ))}
-        </ul>
+                  height: "50px",
+                  flexShrink: 0,
+                  color: "#fff",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  overflow: "hidden",
+                }}>
+                <span
+                  style={{
+                    padding: "6px",
+                    marginLeft: "12px",
+                    cursor: "pointer",
+                    border: "2px solid white",
+                    background: "transparent",
+                  }}
+                  onClick={() => goToPrivateChat(user)}>
+                  {user.name}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
         <div
           style={{
             padding: "6px",
@@ -138,7 +133,7 @@ export default function Chat() {
             width: "10px",
             background: "transparent",
           }}></div>
-        {pages.length > 1 && (
+        {/* {pages.length > 1 && (
           <div
             style={{
               padding: "6px",
@@ -152,7 +147,7 @@ export default function Chat() {
             onClick={() => next()}>
             Next
           </div>
-        )}
+        )} */}
       </div>
 
       {/* <div>
@@ -201,7 +196,9 @@ export default function Chat() {
                     : message.name}
                 </p>
                 {/* {message.message != null && convert(message.message)} */}
-                <div dangerouslySetInnerHTML={{ __html: message.message }} />
+                <div
+                  dangerouslySetInnerHTML={{ __html: convert(message.message) }}
+                />
                 {message.attachment != "" && (
                   <div>
                     <LightgalleryItem
