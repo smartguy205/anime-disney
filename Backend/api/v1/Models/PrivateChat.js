@@ -19,6 +19,7 @@ const privateChatSchema = mongoose.Schema(
     sender: {},
     userId: {
       type: String,
+      default: "",
     },
   },
   {

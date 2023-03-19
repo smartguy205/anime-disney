@@ -7,7 +7,7 @@ const { success } = require("../../../util/statusCode").statusCode;
 
 exports.addChat = tryCatchAsync(async (req, res) => {
   const { sender, name, message, attachment } = req.body;
-  console.log(sender, name);
+  console.log(sender, message);
   const data = await GroupChat.create({
     name,
     message,
@@ -36,11 +36,10 @@ exports.addChatPrivate = tryCatchAsync(async (req, res) => {
 });
 
 exports.getPrivateChat = tryCatchAsync(async (req, res) => {
-  const chat = await (
-    await GroupChat.find({
-      $or: [{ userId: req.body.id }, { clientid: req.body.id }],
-    })
-  ).sort({ updatedAt: 1 });
+  console.log("this is user id", req.body.id);
+  const chat = await GroupChat.find({
+    $or: [{ userId: req.body.id }, { clientid: req.body.id }],
+  });
 
   let response_data = { messages: chat };
   return apiResponse.successResponse(res, response_data, "", success);

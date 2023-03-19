@@ -1,7 +1,7 @@
 import http from "./http.service";
 import Promisable from "./promisable.service";
 import { AppDispatch } from "redux/store";
-import { messageActions } from "redux/slices/message";
+import message, { messageActions } from "redux/slices/message";
 
 const MessageService = {
   addMessage: async (id: any, data: any, dispatch?: AppDispatch) => {
@@ -13,9 +13,14 @@ const MessageService = {
       message: data.message,
       attachment: data.attachment
     };
+
+    console.log("sssss----", data.message, typeof data.message)
+
+    console.log('payload is ', payload)
     const [success, error]: any = await Promisable.asPromise(
       http.post("guest/addChat", payload)
     );
+
 
     // if (success) {
     //   const { message } = success.data.data;
@@ -54,13 +59,12 @@ const MessageService = {
 
   getPrivateMessages: async (id: any, dispatch?: AppDispatch) => {
     const [success, error]: any = await Promisable.asPromise(
-      http.post("/guest/getPrivateChat", id)
+      http.post("/guest/getPrivateChat", { id: id })
     );
 
     if (success) {
       const { messages } = success.data.data;
-      console.log(messages)
-      // dispatch?.(messageActions.setMessages(messages));
+      dispatch?.(messageActions.setPrivateMessages(messages));
     }
 
     return [success, error];

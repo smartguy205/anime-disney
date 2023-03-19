@@ -20,6 +20,9 @@ export const messageSlice = createSlice({
       state.clientId = action.payload._id;
       state.isPrivate = true
     },
+    setPrivateMessages: (state, action) => {
+      state.privateMessages = action.payload
+    },
     addPrivateList: (state, action) => {
       const index = state.privateArray.findIndex(item => item._id === action.payload._id)
       if (index == -1) {
