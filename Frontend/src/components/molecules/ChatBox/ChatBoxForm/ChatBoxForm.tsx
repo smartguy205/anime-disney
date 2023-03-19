@@ -36,6 +36,13 @@ function ChatBoxForm() {
         position: toast.POSITION.BOTTOM_RIGHT,
       });
     } else {
+      let new_message;
+      if (message) {
+        const rexpURL = /(((https?:\/\/)|(www\.))[^\s]+)/g;
+        new_message = message.replace(rexpURL, (url: any) => {
+          return '<a href="' + url + '" target="_blank">' + url + "</a>";
+        });
+      }
       if (attachment) {
         const body = new FormData();
         body.append("image", attachment);
@@ -52,7 +59,7 @@ function ChatBoxForm() {
             if (messageInfo.isPrivate) {
               const valuesPrivate = {
                 id: localStorage.getItem("socketId"),
-                message: message,
+                message: new_message,
                 attachment: response.data.data.url,
                 userid: user ? user._id : null,
                 isPrivate: true,
@@ -65,7 +72,7 @@ function ChatBoxForm() {
             } else {
               const values = {
                 id: localStorage.getItem("socketId"),
-                message: message,
+                message: new_message,
                 attachment: response.data.data.url,
                 userid: user ? user._id : null,
               };
@@ -80,7 +87,7 @@ function ChatBoxForm() {
         if (messageInfo.isPrivate) {
           const valuesPrivate = {
             id: localStorage.getItem("socketId"),
-            message: message,
+            message: new_message,
             attachment: "",
             userid: user ? user._id : null,
             isPrivate: true,
@@ -93,7 +100,7 @@ function ChatBoxForm() {
         } else {
           const values = {
             id: localStorage.getItem("socketId"),
-            message: message,
+            message: new_message,
             attachment: "",
             userid: user ? user._id : null,
           };

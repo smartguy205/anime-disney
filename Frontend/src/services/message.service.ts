@@ -5,6 +5,8 @@ import { messageActions } from "redux/slices/message";
 
 const MessageService = {
   addMessage: async (id: any, data: any, dispatch?: AppDispatch) => {
+
+
     let payload = {
       sender: id,
       name: data.name,
@@ -45,6 +47,20 @@ const MessageService = {
       const { messages } = success.data.data;
 
       dispatch?.(messageActions.setMessages(messages));
+    }
+
+    return [success, error];
+  },
+
+  getPrivateMessages: async (id: any, dispatch?: AppDispatch) => {
+    const [success, error]: any = await Promisable.asPromise(
+      http.post("/guest/getPrivateChat", id)
+    );
+
+    if (success) {
+      const { messages } = success.data.data;
+      console.log(messages)
+      // dispatch?.(messageActions.setMessages(messages));
     }
 
     return [success, error];

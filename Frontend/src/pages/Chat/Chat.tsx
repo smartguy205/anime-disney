@@ -18,7 +18,11 @@ export default function Chat() {
       )
     : message.messages;
   useEffect(() => {
+    // if (user) {
+    //   MessageService.getPrivateMessages(user._id, dispatch);
+    // }
     MessageService.getMessages(dispatch);
+
     SocketService.message(user?._id, dispatch);
     SocketService.messagePrivateToUser(user?._id, dispatch);
     // if(message.isPrivate) MessageService.getPrivateMessages(dispatch);
@@ -37,36 +41,37 @@ export default function Chat() {
     useSnapCarousel();
   return (
     <>
-      {message.isPrivate && (
+      {!message.isPrivate ? (
         <div style={{ display: "flex", justifyItems: "center" }}>
-          <span
-            style={{
-              padding: "6px",
-              marginLeft: "5px",
-              background: "#05467c",
-              margin: "auto",
-              height: "36px",
-              cursor: "pointer",
-            }}
-            onClick={() => dispatch(messageActions.setPublic())}>
-            Chat
-          </span>
-
           <div
             style={{
               padding: "6px",
               marginLeft: "10px",
-              background: "#0f7aae",
-              marginTop: "23px",
-              height: "36px",
+
+              marginTop: "21px",
+              height: "40px",
               cursor: "pointer",
+              border: "2px solid white",
+              background: "transparent",
             }}
             onClick={() => prev()}>
             Prev
           </div>
+          <div
+            style={{
+              padding: "6px",
+              marginLeft: "10px",
+
+              marginTop: "21px",
+              height: "40px",
+              width: "10px",
+              background: "transparent",
+            }}></div>
           <ul
             ref={scrollRef}
             style={{
+              paddingLeft: "10px",
+              paddingRight: "10px",
               display: "flex",
               overflow: "hidden",
               scrollSnapType: "x mandatory",
@@ -86,8 +91,9 @@ export default function Chat() {
                   style={{
                     padding: "6px",
                     marginLeft: "12px",
-                    background: "#05467c",
                     cursor: "pointer",
+                    border: "2px solid white",
+                    background: "transparent",
                   }}
                   onClick={() => goToPrivateChat(user)}>
                   {user.name}
@@ -98,10 +104,105 @@ export default function Chat() {
           <div
             style={{
               padding: "6px",
+              marginLeft: "10px",
+
+              marginTop: "21px",
+              height: "40px",
+              width: "10px",
+              background: "transparent",
+            }}></div>
+          <div
+            style={{
+              padding: "6px",
               marginLeft: "5px",
-              background: "#0f7aae",
               margin: "auto",
-              height: "36px",
+              height: "40px",
+              cursor: "pointer",
+              border: "2px solid white",
+              background: "transparent",
+            }}
+            onClick={() => next()}>
+            Next
+          </div>
+        </div>
+      ) : (
+        <div style={{ display: "flex", justifyItems: "center" }}>
+          <div
+            style={{
+              padding: "6px",
+              marginLeft: "10px",
+
+              marginTop: "21px",
+              height: "40px",
+              cursor: "pointer",
+              border: "2px solid white",
+              background: "transparent",
+            }}
+            onClick={() => prev()}>
+            Prev
+          </div>
+          <div
+            style={{
+              padding: "6px",
+              marginLeft: "10px",
+
+              marginTop: "21px",
+              height: "40px",
+              width: "10px",
+              background: "transparent",
+            }}></div>
+          <ul
+            ref={scrollRef}
+            style={{
+              paddingLeft: "10px",
+              paddingRight: "10px",
+              display: "flex",
+              overflow: "hidden",
+              scrollSnapType: "x mandatory",
+            }}>
+            {message.privateArray.map((user: any, index: number) => (
+              <li
+                style={{
+                  height: "50px",
+                  flexShrink: 0,
+                  color: "#fff",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  overflow: "hidden",
+                }}>
+                <span
+                  style={{
+                    padding: "6px",
+                    marginLeft: "12px",
+                    cursor: "pointer",
+                    border: "2px solid white",
+                    background: "transparent",
+                  }}>
+                  {user.name}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <div
+            style={{
+              padding: "6px",
+              marginLeft: "10px",
+
+              marginTop: "21px",
+              height: "40px",
+              width: "10px",
+              background: "transparent",
+            }}></div>
+          <div
+            style={{
+              padding: "6px",
+              marginLeft: "5px",
+              margin: "auto",
+              height: "40px",
+              cursor: "pointer",
+              border: "2px solid white",
+              background: "transparent",
             }}
             onClick={() => next()}>
             Next
@@ -124,14 +225,21 @@ export default function Chat() {
         {messages.map((message: any, index: any) => (
           <div className="chat-message" key={index} ref={scrollRef_}>
             <div className="chat-user-data">
-              <img
+              <LightgalleryItem
                 src={
                   message.sender && message.sender?.profile_image
                     ? message.sender?.profile_image
                     : GuestIcon
-                }
-                alt="Guest"
-              />
+                }>
+                <img
+                  src={
+                    message.sender && message.sender?.profile_image
+                      ? message.sender?.profile_image
+                      : GuestIcon
+                  }
+                  alt="Guest"
+                />
+              </LightgalleryItem>
               <p style={{ textTransform: "capitalize" }}>
                 {message.sender != null && message.sender.name}
               </p>
@@ -144,7 +252,8 @@ export default function Chat() {
                     : message.name}
                 </p>
                 <div>
-                  <p>{message.message}</p>
+                  <div
+                    dangerouslySetInnerHTML={{ __html: message.message }}></div>
                 </div>
                 {message.attachment != "" && (
                   <div>

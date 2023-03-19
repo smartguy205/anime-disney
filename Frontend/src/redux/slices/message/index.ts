@@ -6,4 +6,5 @@ export interface MessageState {
   privateClient: Object;
   clientId: String;
   isPrivate: Boolean;
+  privateArray: any[];
 }
