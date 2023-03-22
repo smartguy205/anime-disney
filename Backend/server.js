@@ -101,7 +101,7 @@ io.on("connection", (socket) => {
       const user = {
         userid: isLogin ? userId : null,
         id: socket.id,
-        name: isLogin ? name : userName,
+        name: isLogin ? name : offlineuser.userName,
         online: true,
         room,
       };
